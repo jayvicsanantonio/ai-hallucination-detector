@@ -22,9 +22,9 @@
     - Create unit tests for audit data persistence and retrieval
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 3. Build API Gateway and authentication
+- [x] 3. Build API Gateway and authentication
 
-  - [ ] 3.1 Implement Express.js API gateway with routing
+  - [x] 3.1 Implement Express.js API gateway with routing
 
     - Set up Express server with middleware for CORS, rate limiting, and request parsing
     - Create route handlers for /verify, /verify/batch, /results, and /feedback endpoints
@@ -32,7 +32,7 @@
     - Write integration tests for API endpoints
     - _Requirements: 2.1, 2.2, 6.5_
 
-  - [ ] 3.2 Add authentication and authorization middleware
+  - [x] 3.2 Add authentication and authorization middleware
     - Implement JWT-based authentication with enterprise SSO integration
     - Create role-based access control middleware for different user types
     - Add API key management for programmatic access

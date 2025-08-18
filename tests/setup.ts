@@ -4,6 +4,10 @@ import { config } from 'dotenv';
 // Load test environment variables
 config({ path: '.env.test' });
 
+// Set test environment variables
+process.env.JWT_SECRET = 'test-jwt-secret-for-testing';
+process.env.NODE_ENV = 'test';
+
 // Global test setup
 beforeAll(async () => {
   // Setup test database, Redis, etc.
