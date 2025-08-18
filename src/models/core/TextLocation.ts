@@ -20,27 +20,44 @@ export interface Section {
   title: string;
   content: string;
   level: number;
-  location: TextLocation;
+  startLine?: number;
+  endLine?: number;
+  location?: TextLocation;
+  type?: string;
+  itemCount?: number;
+  index?: number;
 }
 
 export interface Table {
   id: string;
   caption?: string;
-  headers: string[];
-  rows: string[][];
-  location: TextLocation;
+  headers?: string[];
+  rows?: string[][];
+  location?: TextLocation;
+  startLine?: number;
+  endLine?: number;
+  columns?: number;
+  data?: any[];
+  path?: string;
 }
 
 export interface Figure {
   id: string;
   caption?: string;
-  type: 'image' | 'chart' | 'diagram';
-  location: TextLocation;
+  type?: string;
+  location?: TextLocation;
+  line?: number;
+  path?: string;
+  properties?: string[];
 }
 
 export interface Reference {
   id: string;
   text: string;
   url?: string;
-  location: TextLocation;
+  location?: TextLocation;
+  line?: number;
+  context?: string;
+  type?: string;
+  path?: string;
 }

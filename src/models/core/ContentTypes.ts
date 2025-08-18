@@ -1,6 +1,6 @@
 // Content type definitions and enums
 
-export type ContentType = 'text' | 'pdf' | 'docx' | 'json';
+export type ContentType = 'text' | 'txt' | 'pdf' | 'docx' | 'json';
 
 export type Domain =
   | 'legal'
@@ -25,7 +25,18 @@ export type EntityType =
   | 'date'
   | 'amount'
   | 'regulation'
-  | 'medical_term';
+  | 'medical_term'
+  | 'email'
+  | 'phone'
+  | 'url'
+  | 'ssn'
+  | 'credit_card'
+  | 'ip_address'
+  | 'percentage'
+  | 'legal_entity'
+  | 'financial_instrument'
+  | 'insurance_term'
+  | 'place';
 
 export type SourceType =
   | 'academic'
