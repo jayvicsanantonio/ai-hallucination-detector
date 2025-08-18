@@ -73,9 +73,9 @@
     - Write tests for caching behavior and result consistency
     - _Requirements: 1.5, 6.1, 6.2_
 
-- [ ] 6. Develop fact-checking module
+- [x] 6. Develop fact-checking module
 
-  - [ ] 6.1 Implement knowledge base integration
+  - [x] 6.1 Implement knowledge base integration
 
     - Create knowledge base interface and mock implementation
     - Build fact extraction and claim identification logic
@@ -83,7 +83,7 @@
     - Write unit tests for fact-checking accuracy
     - _Requirements: 1.2, 4.1, 4.2_
 
-  - [ ] 6.2 Add external knowledge source connectors
+  - [x] 6.2 Add external knowledge source connectors
     - Integrate with external APIs for fact verification (Wikipedia, government databases)
     - Implement source reliability weighting and conflict resolution
     - Create fallback mechanisms for unavailable sources
