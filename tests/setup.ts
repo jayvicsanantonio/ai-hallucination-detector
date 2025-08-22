@@ -1,5 +1,6 @@
 // Jest test setup file
 import { config } from 'dotenv';
+import '@testing-library/jest-dom';
 
 // Load test environment variables
 config({ path: '.env.test' });
