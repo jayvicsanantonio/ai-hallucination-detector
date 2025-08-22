@@ -9,4 +9,5 @@ export interface FeedbackData {
   timestamp: Date;
   issueId?: string; // Specific issue being corrected
   confidence?: number; // User's confidence in their feedback
+  originalContent?: string; // Original content that was verified
 }

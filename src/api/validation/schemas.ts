@@ -58,5 +58,11 @@ export const feedbackSchema = {
     corrections: Joi.string().max(5000).optional(),
     expertNotes: Joi.string().max(2000).optional(),
     issueId: Joi.string().uuid().optional(),
+    confidence: Joi.number().min(0).max(1).optional(),
   }),
+};
+
+// Validation function for feedback
+export const validateFeedback = (data: any) => {
+  return feedbackSchema.body.validate(data);
 };
