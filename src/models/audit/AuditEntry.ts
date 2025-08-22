@@ -32,7 +32,29 @@ export type AuditAction =
   | 'user_authorized'
   | 'configuration_changed'
   | 'system_error'
-  | 'security_event';
+  | 'security_event'
+  // Compliance-specific actions
+  | 'compliance_check_started'
+  | 'compliance_check_completed'
+  | 'compliance_check_failed'
+  | 'violation_detected'
+  | 'violation_resolved'
+  | 'rule_applied'
+  | 'rule_skipped'
+  | 'rule_created'
+  | 'rule_updated'
+  | 'rule_deleted'
+  | 'compliance_report_generated'
+  | 'compliance_report_exported'
+  | 'compliance_report_accessed'
+  | 'compliance_report_started'
+  | 'compliance_report_failed'
+  | 'remediation_started'
+  | 'remediation_completed'
+  | 'regulatory_reference_accessed'
+  | 'compliance_threshold_exceeded'
+  | 'compliance_policy_updated'
+  | 'compliance_training_completed';
 
 export type AuditSeverity = 'info' | 'warning' | 'error' | 'critical';
 

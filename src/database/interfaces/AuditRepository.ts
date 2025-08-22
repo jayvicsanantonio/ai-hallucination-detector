@@ -33,9 +33,12 @@ export interface AuditRepository {
   ): Promise<VerificationSession[]>;
 
   // Audit Entry operations
+  createEntry(entry: Omit<AuditEntry, 'id'>): Promise<AuditEntry>;
   createAuditEntry(entry: AuditEntry): Promise<AuditEntry>;
   getAuditEntry(id: string): Promise<AuditEntry | null>;
+  getEntriesBySession(sessionId: string): Promise<AuditEntry[]>;
   getAuditEntriesBySession(sessionId: string): Promise<AuditEntry[]>;
+  queryEntries(query: AuditQuery): Promise<AuditEntry[]>;
   queryAuditEntries(query: AuditQuery): Promise<AuditEntry[]>;
   getAuditSummary(
     organizationId: string,
