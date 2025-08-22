@@ -33,6 +33,7 @@ export type AuditAction =
   | 'configuration_changed'
   | 'system_error'
   | 'security_event'
+  | 'system_maintenance'
   // Compliance-specific actions
   | 'compliance_check_started'
   | 'compliance_check_completed'
