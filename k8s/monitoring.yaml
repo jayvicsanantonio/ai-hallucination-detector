@@ -1,0 +1,179 @@
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: certaintyai-metrics
+  namespace: certaintyai
+  labels:
+    app: certaintyai
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+---
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: verification-engine-metrics
+  namespace: certaintyai
+  labels:
+    app: certaintyai
+spec:
+  selector:
+    matchLabels:
+      app: verification-engine
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+---
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: content-processor-metrics
+  namespace: certaintyai
+  labels:
+    app: certaintyai
+spec:
+  selector:
+    matchLabels:
+      app: content-processor
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: certaintyai-alerts
+  namespace: certaintyai
+  labels:
+    app: certaintyai
+spec:
+  groups:
+    - name: certaintyai.performance
+      rules:
+        - alert: HighResponseTime
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+          for: 2m
+          labels:
+            severity: warning
+            service: '{{ $labels.service }}'
+          annotations:
+            summary: 'High response time detected'
+            description: '95th percentile response time is {{ $value }}s for service {{ $labels.service }}'
+
+        - alert: CriticalResponseTime
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 5
+          for: 1m
+          labels:
+            severity: critical
+            service: '{{ $labels.service }}'
+          annotations:
+            summary: 'Critical response time detected'
+            description: '95th percentile response time is {{ $value }}s for service {{ $labels.service }}'
+
+        - alert: HighErrorRate
+          expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+          for: 2m
+          labels:
+            severity: warning
+            service: '{{ $labels.service }}'
+          annotations:
+            summary: 'High error rate detected'
+            description: 'Error rate is {{ $value | humanizePercentage }} for service {{ $labels.service }}'
+
+        - alert: CriticalErrorRate
+          expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.1
+          for: 1m
+          labels:
+            severity: critical
+            service: '{{ $labels.service }}'
+          annotations:
+            summary: 'Critical error rate detected'
+            description: 'Error rate is {{ $value | humanizePercentage }} for service {{ $labels.service }}'
+
+    - name: certaintyai.resources
+      rules:
+        - alert: HighMemoryUsage
+          expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.8
+          for: 5m
+          labels:
+            severity: warning
+            service: '{{ $labels.container }}'
+          annotations:
+            summary: 'High memory usage detected'
+            description: 'Memory usage is {{ $value | humanizePercentage }} for container {{ $labels.container }}'
+
+        - alert: CriticalMemoryUsage
+          expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+          for: 2m
+          labels:
+            severity: critical
+            service: '{{ $labels.container }}'
+          annotations:
+            summary: 'Critical memory usage detected'
+            description: 'Memory usage is {{ $value | humanizePercentage }} for container {{ $labels.container }}'
+
+        - alert: HighCPUUsage
+          expr: rate(container_cpu_usage_seconds_total[5m]) / container_spec_cpu_quota * container_spec_cpu_period > 0.8
+          for: 5m
+          labels:
+            severity: warning
+            service: '{{ $labels.container }}'
+          annotations:
+            summary: 'High CPU usage detected'
+            description: 'CPU usage is {{ $value | humanizePercentage }} for container {{ $labels.container }}'
+
+    - name: certaintyai.availability
+      rules:
+        - alert: ServiceDown
+          expr: up{job=~"certaintyai.*"} == 0
+          for: 1m
+          labels:
+            severity: critical
+            service: '{{ $labels.job }}'
+          annotations:
+            summary: 'Service is down'
+            description: 'Service {{ $labels.job }} has been down for more than 1 minute'
+
+        - alert: LowCacheHitRate
+          expr: cache_hit_rate < 0.7
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'Low cache hit rate'
+            description: 'Cache hit rate is {{ $value | humanizePercentage }}'
+
+        - alert: DatabaseConnectionsHigh
+          expr: database_connections_active / database_connections_max > 0.8
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High database connection usage'
+            description: 'Database connection usage is {{ $value | humanizePercentage }}'
+
+    - name: certaintyai.scaling
+      rules:
+        - alert: ScalingRecommended
+          expr: |
+            (
+              rate(http_requests_total[5m]) > 100 and
+              histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+            ) or (
+              container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.7 and
+              rate(container_cpu_usage_seconds_total[5m]) / container_spec_cpu_quota * container_spec_cpu_period > 0.7
+            )
+          for: 3m
+          labels:
+            severity: info
+            service: '{{ $labels.service }}'
+          annotations:
+            summary: 'Scaling recommended'
+            description: 'Service {{ $labels.service }} may benefit from scaling up based on current load patterns'

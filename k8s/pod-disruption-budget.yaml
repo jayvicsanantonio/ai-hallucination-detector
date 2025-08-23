@@ -1,0 +1,54 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-gateway-pdb
+  namespace: certaintyai
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: verification-engine-pdb
+  namespace: certaintyai
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: verification-engine
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: content-processor-pdb
+  namespace: certaintyai
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: content-processor
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-pdb
+  namespace: certaintyai
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: postgres
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: certaintyai
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis
