@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verification-engine
+  namespace: certaintyai
+  labels:
+    app: verification-engine
+    component: core
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: verification-engine
+  template:
+    metadata:
+      labels:
+        app: verification-engine
+        component: core
+    spec:
+      containers:
+        - name: verification-engine
+          image: certaintyai:latest
+          ports:
+            - containerPort: 3000
+            - containerPort: 9090 # Metrics port
+          env:
+            - name: SERVICE_TYPE
+              value: 'verification-engine'
+            - name: PORT
+              value: '3000'
+          envFrom:
+            - configMapRef:
+                name: certaintyai-config
+            - secretRef:
+                name: certaintyai-secrets
+          resources:
+            requests:
+              memory: '1Gi'
+              cpu: '1000m'
+            limits:
+              memory: '2Gi'
+              cpu: '2000m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: app-logs
+              mountPath: /app/logs
+            - name: model-cache
+              mountPath: /app/cache/models
+      volumes:
+        - name: app-logs
+          emptyDir: {}
+        - name: model-cache
+          emptyDir:
+            sizeLimit: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verification-engine-service
+  namespace: certaintyai
+  labels:
+    app: verification-engine
+spec:
+  selector:
+    app: verification-engine
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: verification-engine-hpa
+  namespace: certaintyai
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: verification-engine
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 85
+    - type: Pods
+      pods:
+        metric:
+          name: verification_queue_length
+        target:
+          type: AverageValue
+          averageValue: '10'
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 15
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 5
+          periodSeconds: 30

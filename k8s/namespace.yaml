@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: certaintyai
+  labels:
+    name: certaintyai
+    app: certaintyai

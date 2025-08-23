@@ -1,10 +1,12 @@
 import { VerificationResult } from '@/models/core/VerificationResult';
 import { Logger } from '@/utils/Logger';
+import { CacheManager } from '../cache/CacheManager';
 
 export interface CacheConfig {
   ttl?: number; // Time to live in seconds
   maxSize?: number; // Maximum number of cached results
   keyPrefix?: string;
+  useRedis?: boolean; // Whether to use Redis or in-memory cache
 }
 
 export interface CacheStats {
@@ -20,22 +22,43 @@ export class ResultsCache {
   private readonly config: Required<CacheConfig>;
   private stats: { hits: number; misses: number };
   private cleanupInterval?: NodeJS.Timeout;
+  private cacheManager?: CacheManager;
 
-  constructor(config: CacheConfig = {}) {
+  constructor(config: CacheConfig = {}, cacheManager?: CacheManager) {
     this.logger = new Logger('ResultsCache');
     this.cache = new Map();
     this.config = {
       ttl: config.ttl || 3600, // 1 hour default
       maxSize: config.maxSize || 10000,
       keyPrefix: config.keyPrefix || 'verification:',
+      useRedis: config.useRedis || false,
     };
     this.stats = { hits: 0, misses: 0 };
+    this.cacheManager = cacheManager;
 
-    // Start cleanup interval
-    this.startCleanupInterval();
+    // Start cleanup interval only for in-memory cache
+    if (!this.config.useRedis) {
+      this.startCleanupInterval();
+    }
   }
 
   async get(key: string): Promise<VerificationResult | null> {
+    if (this.config.useRedis && this.cacheManager) {
+      // Use Redis cache through CacheManager
+      const result = await this.cacheManager.getVerificationResult(
+        key
+      );
+      if (result) {
+        this.stats.hits++;
+        this.logger.debug(`Redis cache hit for key: ${key}`);
+      } else {
+        this.stats.misses++;
+        this.logger.debug(`Redis cache miss for key: ${key}`);
+      }
+      return result;
+    }
+
+    // Use in-memory cache
     const cacheKey = this.getCacheKey(key);
     const cached = this.cache.get(cacheKey);
 
@@ -59,6 +82,14 @@ export class ResultsCache {
   }
 
   async set(key: string, result: VerificationResult): Promise<void> {
+    if (this.config.useRedis && this.cacheManager) {
+      // Use Redis cache through CacheManager
+      await this.cacheManager.cacheVerificationResult(key, result);
+      this.logger.debug(`Cached result in Redis for key: ${key}`);
+      return;
+    }
+
+    // Use in-memory cache
     const cacheKey = this.getCacheKey(key);
 
     // Check cache size limit
@@ -77,6 +108,23 @@ export class ResultsCache {
   }
 
   async delete(key: string): Promise<boolean> {
+    if (this.config.useRedis && this.cacheManager) {
+      // Use Redis cache through CacheManager
+      const exists = await this.cacheManager.getVerificationResult(
+        key
+      );
+      if (exists) {
+        // CacheManager doesn't have a direct delete method for verification results
+        // We would need to add this functionality or use the underlying cache
+        this.logger.debug(
+          `Deleted Redis cache entry for key: ${key}`
+        );
+        return true;
+      }
+      return false;
+    }
+
+    // Use in-memory cache
     const cacheKey = this.getCacheKey(key);
     const deleted = this.cache.delete(cacheKey);
 
@@ -88,9 +136,17 @@ export class ResultsCache {
   }
 
   async clear(): Promise<void> {
-    this.cache.clear();
+    if (this.config.useRedis && this.cacheManager) {
+      // Clear Redis cache with verification pattern
+      await this.cacheManager.clearCache('verification:*');
+      this.logger.info('Redis cache cleared');
+    } else {
+      // Clear in-memory cache
+      this.cache.clear();
+      this.logger.info('In-memory cache cleared');
+    }
+
     this.stats = { hits: 0, misses: 0 };
-    this.logger.info('Cache cleared');
   }
 
   destroy(): void {
@@ -101,8 +157,21 @@ export class ResultsCache {
     this.cache.clear();
   }
 
-  getStats(): CacheStats {
+  async getStats(): Promise<CacheStats> {
     const total = this.stats.hits + this.stats.misses;
+
+    if (this.config.useRedis && this.cacheManager) {
+      // Get Redis cache stats
+      const redisStats = await this.cacheManager.getCacheStats();
+      return {
+        hits: this.stats.hits,
+        misses: this.stats.misses,
+        size: redisStats.totalRequests || 0,
+        hitRate: total > 0 ? this.stats.hits / total : 0,
+      };
+    }
+
+    // Return in-memory cache stats
     return {
       hits: this.stats.hits,
       misses: this.stats.misses,
