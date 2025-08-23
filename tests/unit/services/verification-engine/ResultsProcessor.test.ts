@@ -309,8 +309,8 @@ describe('ResultsProcessor', () => {
   });
 
   describe('cache management', () => {
-    it('should provide cache statistics', () => {
-      const stats = processor.getCacheStats();
+    it('should provide cache statistics', async () => {
+      const stats = await processor.getCacheStats();
       expect(stats).toBeDefined();
       expect(typeof stats.hits).toBe('number');
       expect(typeof stats.misses).toBe('number');

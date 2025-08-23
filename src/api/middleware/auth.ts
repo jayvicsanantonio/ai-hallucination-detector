@@ -335,6 +335,9 @@ export const generateJWT = (
   } as jwt.SignOptions);
 };
 
+// Simple auth middleware for backward compatibility
+export const authMiddleware = authenticate;
+
 // Permission constants
 export const PERMISSIONS = {
   VERIFY_CREATE: 'verify:create',
