@@ -27,6 +27,7 @@ export class GovernmentDataSource implements ExternalKnowledgeSource {
     financial: 'https://api.sec.gov',
     legal: 'https://api.justice.gov',
     insurance: 'https://api.treasury.gov',
+    general: 'https://api.data.gov',
   };
 
   constructor(config?: Partial<ExternalSourceConfig>) {
@@ -61,13 +62,16 @@ export class GovernmentDataSource implements ExternalKnowledgeSource {
       const sources: Source[] = searchResults.map(
         (result, index) => ({
           id: `gov-${Date.now()}-${index}`,
+          name: result.agency,
           title: result.title,
           url: result.url,
+          type: 'government' as SourceType,
           sourceType: 'government' as SourceType,
           credibilityScore: this.getReliabilityForDomain(
             query.domain || 'healthcare'
           ),
           publishDate: result.publishDate,
+          lastUpdated: new Date(),
           lastVerified: new Date(),
           author: result.agency,
         })
@@ -222,7 +226,7 @@ export class GovernmentDataSource implements ExternalKnowledgeSource {
   }
 
   private calculateConfidence(
-    results: any[],
+    results: unknown[],
     statement: string,
     domain?: Domain
   ): number {

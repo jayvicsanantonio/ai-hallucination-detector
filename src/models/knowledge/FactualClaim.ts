@@ -1,14 +1,13 @@
-import { Domain } from '../core/ContentTypes';
 import { Source } from './Source';
 
 export interface FactualClaim {
   id: string;
   statement: string;
+  confidence: number;
   sources: Source[];
-  confidence: number; // 0-100
-  domain: Domain;
+  domain?: string;
+  verified: boolean;
+  createdAt: Date;
   lastVerified: Date;
   contradictions?: string[];
-  tags?: string[];
-  verificationMethod?: string;
 }

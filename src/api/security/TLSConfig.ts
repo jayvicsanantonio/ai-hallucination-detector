@@ -37,8 +37,8 @@ export class TLSConfig {
    */
   createHTTPSOptions(): https.ServerOptions {
     const httpsOptions: https.ServerOptions = {
-      minVersion: this.options.minVersion,
-      maxVersion: this.options.maxVersion,
+      minVersion: this.options.minVersion as any,
+      maxVersion: this.options.maxVersion as any,
       ciphers: this.options.ciphers,
       honorCipherOrder: this.options.honorCipherOrder,
       secureProtocol: this.options.secureProtocol,
@@ -57,7 +57,9 @@ export class TLSConfig {
         }
       } catch (error) {
         throw new Error(
-          `Failed to load TLS certificates: ${error.message}`
+          `Failed to load TLS certificates: ${
+            (error as Error).message
+          }`
         );
       }
     } else {

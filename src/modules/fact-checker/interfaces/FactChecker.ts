@@ -1,6 +1,6 @@
-import { ParsedContent } from '../../models/core/ParsedContent';
-import { VerificationResult } from '../../models/core/VerificationResult';
-import { Domain } from '../../models/core/ContentTypes';
+import { ParsedContent } from '../../../models/core/ParsedContent';
+import { VerificationResult } from '../../../models/core/VerificationResult';
+import { Domain } from '../../../models/core/ContentTypes';
 
 export interface FactCheckingRequest {
   content: ParsedContent;

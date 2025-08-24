@@ -61,7 +61,7 @@ export class KnowledgeBaseUpdater {
             verificationResult
           ))
         );
-      } else if (feedbackData.userFeedback === 'partial') {
+      } else if (feedbackData.userFeedback === 'partially_correct') {
         updates.push(
           ...(await this.processPartialFeedback(
             feedbackData,
@@ -125,9 +125,12 @@ export class KnowledgeBaseUpdater {
               sources: [
                 {
                   id: `user_feedback_${feedbackData.userId}`,
+                  name: 'User Correction',
                   title: 'User Correction',
-                  credibilityScore: 0.7,
+                  type: 'internal',
                   sourceType: 'internal',
+                  credibilityScore: 0.7,
+                  lastUpdated: new Date(),
                 },
               ],
             };
@@ -306,7 +309,7 @@ export class KnowledgeBaseUpdater {
    */
   private async createNuancedRule(
     feedbackData: FeedbackData,
-    verificationResult: any
+    verificationResult: unknown
   ): Promise<void> {
     try {
       // Create a pattern-based rule that captures the nuance

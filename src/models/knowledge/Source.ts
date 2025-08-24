@@ -2,12 +2,14 @@ import { SourceType } from '../core/ContentTypes';
 
 export interface Source {
   id: string;
+  name: string;
+  title?: string;
   url?: string;
-  title: string;
-  author?: string;
-  publishDate?: Date;
-  credibilityScore: number; // 0-100
-  sourceType: SourceType;
+  credibilityScore: number;
+  type: SourceType;
+  sourceType?: SourceType;
+  lastUpdated: Date;
   lastVerified?: Date;
-  accessDate?: Date;
+  publishDate?: Date;
+  author?: string;
 }

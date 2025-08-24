@@ -1,20 +1,39 @@
 import { Router, Request, Response } from 'express';
 import { SystemHealthMonitor } from '../../services/monitoring/SystemHealthMonitor';
+import { Logger } from '../../utils/Logger';
 
 const router = Router();
+
+// Mock logger and config for health checks
+const mockLogger = new Logger('health-check');
+const mockConfig = {
+  metricsCollectionInterval: 30000,
+  healthCheckInterval: 30000,
+  alertThresholds: {
+    cpu: { warning: 70, critical: 90 },
+    memory: { warning: 80, critical: 95 },
+    disk: { warning: 85, critical: 95 },
+    responseTime: { warning: 1000, critical: 2000 },
+    errorRate: { warning: 5, critical: 10 },
+  },
+  retentionPeriod: 86400000, // 24 hours
+};
 
 // Basic health check
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const healthMonitor = new SystemHealthMonitor();
-    const health = await healthMonitor.getSystemHealth();
+    const healthMonitor = new SystemHealthMonitor(
+      mockLogger,
+      mockConfig
+    );
+    const health = await healthMonitor.performHealthChecks();
 
-    const status = health.overall === 'healthy' ? 200 : 503;
+    const status = health.status === 'healthy' ? 200 : 503;
 
     res.status(status).json({
-      status: health.overall,
+      status: health.status,
       timestamp: new Date().toISOString(),
-      services: health.services,
+      checks: health.checks || [],
       version: process.env.npm_package_version || '1.0.0',
       uptime: process.uptime(),
     });
@@ -31,14 +50,17 @@ router.get('/', async (req: Request, res: Response) => {
 // Detailed health check (requires authentication)
 router.get('/detailed', async (req: Request, res: Response) => {
   try {
-    const healthMonitor = new SystemHealthMonitor();
-    const detailedHealth = await healthMonitor.getDetailedHealth();
+    const healthMonitor = new SystemHealthMonitor(
+      mockLogger,
+      mockConfig
+    );
+    const detailedHealth = await healthMonitor.performHealthChecks();
 
     res.json({
-      status: detailedHealth.overall,
+      status: detailedHealth.status,
       timestamp: new Date().toISOString(),
-      services: detailedHealth.services,
-      metrics: detailedHealth.metrics,
+      checks: detailedHealth.checks || [],
+      overallScore: detailedHealth.overallScore || 100,
       version: process.env.npm_package_version || '1.0.0',
       uptime: process.uptime(),
       memory: process.memoryUsage(),
@@ -57,8 +79,12 @@ router.get('/detailed', async (req: Request, res: Response) => {
 // Readiness probe
 router.get('/ready', async (req: Request, res: Response) => {
   try {
-    const healthMonitor = new SystemHealthMonitor();
-    const isReady = await healthMonitor.isSystemReady();
+    const healthMonitor = new SystemHealthMonitor(
+      mockLogger,
+      mockConfig
+    );
+    const health = await healthMonitor.performHealthChecks();
+    const isReady = health.status === 'healthy';
 
     if (isReady) {
       res.json({

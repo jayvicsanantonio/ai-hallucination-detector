@@ -58,6 +58,8 @@ export class ResultsProcessor {
         factual_error: 0,
         logical_inconsistency: 0,
         compliance_violation: 0,
+        formatting_issue: 0,
+        other: 0,
       },
       averageProcessingTime: 0,
     };

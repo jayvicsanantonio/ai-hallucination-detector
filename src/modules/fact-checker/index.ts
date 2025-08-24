@@ -2,7 +2,7 @@
 export * from './interfaces/FactChecker';
 export * from './interfaces/KnowledgeBase';
 export * from './interfaces/ExternalKnowledgeSource';
-export * from './FactChecker';
+export { FactChecker } from './FactChecker';
 export * from './MockKnowledgeBase';
 export * from './ClaimExtractor';
 export * from './SourceCredibilityScorer';

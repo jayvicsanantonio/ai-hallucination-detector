@@ -12,11 +12,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class TextParser implements DocumentParser {
   supports(contentType: ContentType): boolean {
-    return contentType === 'text' || contentType === 'txt';
+    return contentType === 'text';
   }
 
   getSupportedTypes(): ContentType[] {
-    return ['text', 'txt'];
+    return ['text'];
   }
 
   async parse(

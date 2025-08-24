@@ -23,7 +23,9 @@ export class SourceCredibilityScorer {
     academic: 90,
     industry: 75,
     news: 60,
+    encyclopedia: 80,
     internal: 70,
+    other: 50,
   };
 
   private domainAuthorityPatterns = {
@@ -70,7 +72,7 @@ export class SourceCredibilityScorer {
     domain?: string
   ): CredibilityAssessment {
     const factors: CredibilityFactors = {
-      sourceType: this.scoreSourceType(source.sourceType),
+      sourceType: this.scoreSourceType(source.sourceType || 'other'),
       recency: this.scoreRecency(
         source.publishDate,
         source.lastVerified
