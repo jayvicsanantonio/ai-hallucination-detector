@@ -317,7 +317,7 @@ export class KnowledgeBaseUpdater {
         pattern: this.extractPattern(feedbackData.corrections!),
         context: feedbackData.expertNotes!,
         confidence: 0.6,
-        domain: (verificationResult as unknown).domain,
+        domain: (verificationResult as any).domain,
         createdFrom: 'partial_feedback',
         userId: feedbackData.userId,
       };
