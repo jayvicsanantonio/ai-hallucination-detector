@@ -226,7 +226,13 @@ export class GovernmentDataSource implements ExternalKnowledgeSource {
   }
 
   private calculateConfidence(
-    results: unknown[],
+    results: Array<{
+      title: string;
+      url: string;
+      summary: string;
+      publishDate: Date;
+      agency: string;
+    }>,
     statement: string,
     domain?: Domain
   ): number {
