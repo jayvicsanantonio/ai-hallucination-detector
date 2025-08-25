@@ -168,26 +168,35 @@ export class MockKnowledgeBase implements KnowledgeBase {
     const mockSources: Source[] = [
       {
         id: 'src-1',
+        name: 'Medical Research Database',
         title: 'Medical Research Database',
+        type: 'academic' as SourceType,
         sourceType: 'academic' as SourceType,
         credibilityScore: 95,
         url: 'https://pubmed.ncbi.nlm.nih.gov',
+        lastUpdated: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
       },
       {
         id: 'src-2',
+        name: 'FDA Guidelines',
         title: 'FDA Guidelines',
+        type: 'government' as SourceType,
         sourceType: 'government' as SourceType,
         credibilityScore: 98,
         url: 'https://www.fda.gov',
+        lastUpdated: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
       },
       {
         id: 'src-3',
+        name: 'Financial Industry Standards',
         title: 'Financial Industry Standards',
+        type: 'industry' as SourceType,
         sourceType: 'industry' as SourceType,
         credibilityScore: 85,
         url: 'https://www.finra.org',
+        lastUpdated: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
       },
     ];
@@ -204,8 +213,9 @@ export class MockKnowledgeBase implements KnowledgeBase {
         sources: [mockSources[0], mockSources[1]],
         confidence: 92,
         domain: 'healthcare' as Domain,
+        verified: true,
+        createdAt: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
-        tags: ['medication', 'cardiovascular'],
       },
       {
         id: 'claim-2',
@@ -213,8 +223,9 @@ export class MockKnowledgeBase implements KnowledgeBase {
         sources: [mockSources[2]],
         confidence: 98,
         domain: 'financial' as Domain,
+        verified: true,
+        createdAt: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
-        tags: ['banking', 'insurance'],
       },
       {
         id: 'claim-3',
@@ -222,8 +233,9 @@ export class MockKnowledgeBase implements KnowledgeBase {
         sources: [mockSources[1]],
         confidence: 95,
         domain: 'healthcare' as Domain,
+        verified: true,
+        createdAt: new Date('2024-01-01'),
         lastVerified: new Date('2024-01-01'),
-        tags: ['privacy', 'compliance'],
       },
     ];
 

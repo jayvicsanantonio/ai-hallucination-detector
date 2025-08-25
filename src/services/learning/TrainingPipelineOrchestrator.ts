@@ -385,7 +385,7 @@ export class TrainingPipelineOrchestrator {
         trainingJobId: trainingResult.trainingJob.id,
         modelVersionId: trainingResult.modelVersion.id,
         deploymentId: deploymentResult?.deploymentId,
-        abTestId: run.stages.abTesting?.metadata?.abTestId,
+        abTestId: run.stages.abTesting?.metadata?.abTestId as string,
         metrics: validationResult.metrics,
       };
 

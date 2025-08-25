@@ -148,7 +148,7 @@ describe('FeedbackService', () => {
         },
         {
           verificationId: 'test-id',
-          userFeedback: 'partial',
+          userFeedback: 'partially_correct',
           userId: 'user3',
           timestamp: new Date(),
           confidence: 0.7,

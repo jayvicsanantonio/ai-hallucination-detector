@@ -1,10 +1,18 @@
 import Joi from 'joi';
-import {
-  contentTypeSchema,
-  domainSchema,
-  urgencySchema,
-  feedbackTypeSchema,
-} from '../middleware/validation';
+
+// Define schemas directly since they're not exported from validation middleware
+const contentTypeSchema = Joi.string()
+  .valid('text', 'pdf', 'docx', 'json')
+  .default('text');
+const domainSchema = Joi.string()
+  .valid('healthcare', 'financial', 'legal', 'insurance', 'general')
+  .default('general');
+const urgencySchema = Joi.string()
+  .valid('low', 'medium', 'high', 'critical')
+  .default('medium');
+const feedbackTypeSchema = Joi.string()
+  .valid('correct', 'incorrect', 'partially_correct', 'unclear')
+  .required();
 
 // Verify content request schema
 export const verifyContentSchema = {

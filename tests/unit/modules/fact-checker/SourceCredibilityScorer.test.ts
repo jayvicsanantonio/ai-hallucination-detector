@@ -13,11 +13,13 @@ describe('SourceCredibilityScorer', () => {
     overrides: Partial<Source> = {}
   ): Source => ({
     id: 'test-source-1',
+    name: 'Test Source',
     title: 'Test Source',
-    sourceType: 'academic' as SourceType,
+    type: 'academic' as SourceType,
     credibilityScore: 80,
     publishDate: new Date('2024-01-01'),
     lastVerified: new Date('2024-01-15'),
+    lastUpdated: new Date('2024-01-15'),
     ...overrides,
   });
 
@@ -260,9 +262,11 @@ describe('SourceCredibilityScorer', () => {
     it('should handle sources with missing information gracefully', () => {
       const incompleteSource: Source = {
         id: 'incomplete',
+        name: 'Incomplete Source',
         title: 'Incomplete Source',
-        sourceType: 'news' as SourceType,
+        type: 'news' as SourceType,
         credibilityScore: 50,
+        lastUpdated: new Date(),
         // Missing optional fields
       };
 

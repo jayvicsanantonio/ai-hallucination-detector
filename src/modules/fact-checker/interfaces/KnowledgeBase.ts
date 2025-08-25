@@ -1,5 +1,5 @@
-import { FactualClaim, Source } from '../../models/knowledge';
-import { Domain } from '../../models/core/ContentTypes';
+import { FactualClaim, Source } from '../../../models/knowledge';
+import { Domain } from '../../../models/core/ContentTypes';
 
 export interface KnowledgeBaseQuery {
   statement: string;

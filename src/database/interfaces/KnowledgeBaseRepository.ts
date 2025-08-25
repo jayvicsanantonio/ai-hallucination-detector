@@ -78,6 +78,8 @@ export class KnowledgeBaseRepository
       sources: claim.sources || [],
       confidence: claim.confidence || 0.5,
       domain: claim.domain!,
+      verified: claim.verified ?? true,
+      createdAt: claim.createdAt || new Date(),
       lastVerified: claim.lastVerified || new Date(),
       contradictions: claim.contradictions,
     };

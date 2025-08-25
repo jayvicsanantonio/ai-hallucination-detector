@@ -173,7 +173,7 @@ export class FeedbackDataValidator {
 
     // Validate that partial feedback has corrections
     if (
-      feedback.userFeedback === 'partial' &&
+      feedback.userFeedback === 'partially_correct' &&
       !feedback.corrections
     ) {
       throw new AuditValidationError(
@@ -198,7 +198,12 @@ export class FeedbackDataValidator {
   private static isValidFeedbackType(
     type: any
   ): type is FeedbackType {
-    return ['correct', 'incorrect', 'partial'].includes(type);
+    return [
+      'correct',
+      'incorrect',
+      'partially_correct',
+      'unclear',
+    ].includes(type);
   }
 }
 

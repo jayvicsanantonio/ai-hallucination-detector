@@ -333,7 +333,7 @@ export class ComplianceFrameworkService {
       attempted: 0,
       successful: 0,
       failed: 0,
-      errors: [],
+      errors: [] as string[],
     };
 
     // Remediate GDPR data retention issues
@@ -355,12 +355,12 @@ export class ComplianceFrameworkService {
           }
         } else {
           results.failed++;
-          results.errors.push(...cleanupResults.errors);
+          results.errors.push(...(cleanupResults.errors as string[]));
         }
       } catch (error: any) {
         results.failed++;
         results.errors.push(
-          `GDPR remediation failed: ${error.message}`
+          `GDPR remediation failed: ${(error as Error).message}`
         );
       }
     }

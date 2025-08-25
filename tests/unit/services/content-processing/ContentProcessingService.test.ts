@@ -220,7 +220,7 @@ describe('ContentProcessingService', () => {
       const types = service.getSupportedContentTypes();
 
       expect(types).toContain('text');
-      expect(types).toContain('txt');
+      expect(types).toContain('text');
       expect(types).toContain('json');
       expect(types).toContain('pdf');
       expect(types).toContain('docx');

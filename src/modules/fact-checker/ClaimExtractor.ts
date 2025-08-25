@@ -84,6 +84,16 @@ export class ClaimExtractor {
       'risk',
       'insurance',
     ],
+    general: [
+      'fact',
+      'information',
+      'data',
+      'evidence',
+      'research',
+      'study',
+      'report',
+      'analysis',
+    ],
   };
 
   extractClaims(

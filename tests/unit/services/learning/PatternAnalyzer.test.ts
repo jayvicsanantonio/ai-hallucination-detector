@@ -143,7 +143,7 @@ describe('PatternAnalyzer', () => {
       },
       {
         verificationId: 'test-3',
-        userFeedback: 'partial',
+        userFeedback: 'partially_correct',
         corrections: 'Partially correct',
         expertNotes: 'Context matters',
         userId: 'user-3',
@@ -237,7 +237,7 @@ describe('PatternAnalyzer', () => {
         .fill(null)
         .map((_, i) => ({
           verificationId: `test-${i}`,
-          userFeedback: 'partial' as const,
+          userFeedback: 'partially_correct' as const,
           expertNotes: 'This depends on context',
           userId: `user-${i}`,
           timestamp: new Date(`2024-01-${i + 1}`),

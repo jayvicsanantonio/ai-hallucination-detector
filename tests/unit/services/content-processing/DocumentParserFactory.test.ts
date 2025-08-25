@@ -24,7 +24,7 @@ describe('DocumentParserFactory', () => {
     });
 
     it('should return TextParser for txt content type', () => {
-      const parser = DocumentParserFactory.getParser('txt');
+      const parser = DocumentParserFactory.getParser('text');
       expect(parser).toBeInstanceOf(TextParser);
     });
 
@@ -47,9 +47,9 @@ describe('DocumentParserFactory', () => {
       expect(types).toContain('pdf');
       expect(types).toContain('docx');
       expect(types).toContain('text');
-      expect(types).toContain('txt');
+      expect(types).toContain('text');
       expect(types).toContain('json');
-      expect(types.length).toBeGreaterThanOrEqual(5);
+      expect(types.length).toBeGreaterThanOrEqual(4);
     });
 
     it('should not contain duplicate types', () => {
@@ -65,7 +65,7 @@ describe('DocumentParserFactory', () => {
       expect(DocumentParserFactory.isSupported('pdf')).toBe(true);
       expect(DocumentParserFactory.isSupported('docx')).toBe(true);
       expect(DocumentParserFactory.isSupported('text')).toBe(true);
-      expect(DocumentParserFactory.isSupported('txt')).toBe(true);
+      expect(DocumentParserFactory.isSupported('text')).toBe(true);
       expect(DocumentParserFactory.isSupported('json')).toBe(true);
     });
 

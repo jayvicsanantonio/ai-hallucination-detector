@@ -1,5 +1,5 @@
-import { Source } from '../../models/knowledge/Source';
-import { Domain } from '../../models/core/ContentTypes';
+import { Source } from '../../../models/knowledge/Source';
+import { Domain } from '../../../models/core/ContentTypes';
 
 export interface ExternalKnowledgeQuery {
   statement: string;

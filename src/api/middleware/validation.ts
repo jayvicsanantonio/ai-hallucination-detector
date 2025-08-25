@@ -1,88 +1,77 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
-import { v4 as uuidv4 } from 'uuid';
 
-// Add request ID to all requests
-export const requestId = (
+export interface ValidationError extends Error {
+  statusCode: number;
+  code: string;
+}
+
+// Validation schemas
+const verificationSchema = Joi.object({
+  content: Joi.string()
+    .required()
+    .max(10 * 1024 * 1024), // 10MB limit
+  contentType: Joi.string()
+    .valid('text', 'pdf', 'docx', 'json')
+    .required(),
+  domain: Joi.string()
+    .valid('legal', 'financial', 'healthcare', 'insurance')
+    .required(),
+  urgency: Joi.string().valid('low', 'medium', 'high').optional(),
+  metadata: Joi.object().optional(),
+});
+
+const feedbackSchema = Joi.object({
+  verificationId: Joi.string().required(),
+  feedback: Joi.string()
+    .valid('correct', 'incorrect', 'partially_correct')
+    .required(),
+  expertNotes: Joi.string().optional(),
+  corrections: Joi.array().items(Joi.object()).optional(),
+});
+
+export const validationMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  req.headers['x-request-id'] =
-    req.headers['x-request-id'] || uuidv4();
-  res.setHeader('x-request-id', req.headers['x-request-id']);
+  // Skip validation for GET requests and health checks
+  if (req.method === 'GET' || req.path.includes('/health')) {
+    return next();
+  }
+
+  let schema: Joi.ObjectSchema | null = null;
+
+  // Select appropriate schema based on route
+  if (req.path.includes('/verify')) {
+    schema = verificationSchema;
+  } else if (req.path.includes('/feedback')) {
+    schema = feedbackSchema;
+  }
+
+  // If no schema is defined for this route, skip validation
+  if (!schema) {
+    return next();
+  }
+
+  // Validate request body
+  const { error, value } = schema.validate(req.body, {
+    abortEarly: false,
+    stripUnknown: true,
+  });
+
+  if (error) {
+    const validationError: ValidationError = new Error(
+      `Validation failed: ${error.details
+        .map((d) => d.message)
+        .join(', ')}`
+    ) as ValidationError;
+    validationError.statusCode = 400;
+    validationError.code = 'VALIDATION_ERROR';
+    return next(validationError);
+  }
+
+  // Replace request body with validated and sanitized data
+  req.body = value;
   next();
 };
-
-// Validation middleware factory
-export const validateRequest = (schema: {
-  body?: Joi.ObjectSchema;
-  params?: Joi.ObjectSchema;
-  query?: Joi.ObjectSchema;
-}) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const errors: string[] = [];
-
-    // Validate body
-    if (schema.body) {
-      const { error } = schema.body.validate(req.body);
-      if (error) {
-        errors.push(
-          `Body: ${error.details.map((d) => d.message).join(', ')}`
-        );
-      }
-    }
-
-    // Validate params
-    if (schema.params) {
-      const { error } = schema.params.validate(req.params);
-      if (error) {
-        errors.push(
-          `Params: ${error.details.map((d) => d.message).join(', ')}`
-        );
-      }
-    }
-
-    // Validate query
-    if (schema.query) {
-      const { error } = schema.query.validate(req.query);
-      if (error) {
-        errors.push(
-          `Query: ${error.details.map((d) => d.message).join(', ')}`
-        );
-      }
-    }
-
-    if (errors.length > 0) {
-      return res.status(400).json({
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'Request validation failed',
-          details: { validationErrors: errors },
-          timestamp: new Date(),
-          requestId: req.headers['x-request-id'],
-          retryable: false,
-        },
-      });
-    }
-
-    next();
-  };
-};
-
-// Content type validation schemas
-export const contentTypeSchema = Joi.string()
-  .valid('text', 'pdf', 'docx', 'json')
-  .required();
-
-export const domainSchema = Joi.string()
-  .valid('legal', 'financial', 'healthcare', 'insurance')
-  .required();
-
-export const urgencySchema = Joi.string()
-  .valid('low', 'medium', 'high')
-  .default('medium');
-
-export const feedbackTypeSchema = Joi.string()
-  .valid('correct', 'incorrect', 'partial')
-  .required();
