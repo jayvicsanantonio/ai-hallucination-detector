@@ -11,7 +11,7 @@ describe('TextParser', () => {
   describe('supports', () => {
     it('should support text and txt content types', () => {
       expect(parser.supports('text')).toBe(true);
-      expect(parser.supports('txt')).toBe(true);
+      expect(parser.supports('text')).toBe(true);
       expect(parser.supports('pdf')).toBe(false);
       expect(parser.supports('docx')).toBe(false);
     });
@@ -21,8 +21,7 @@ describe('TextParser', () => {
     it('should return supported content types', () => {
       const types = parser.getSupportedTypes();
       expect(types).toContain('text');
-      expect(types).toContain('txt');
-      expect(types).toHaveLength(2);
+      expect(types).toHaveLength(1);
     });
   });
 

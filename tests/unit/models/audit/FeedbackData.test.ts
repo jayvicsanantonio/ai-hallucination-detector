@@ -87,7 +87,7 @@ describe('FeedbackData Model', () => {
     it('should throw AuditValidationError for partial feedback without corrections', () => {
       const invalid = {
         ...validFeedback,
-        userFeedback: 'partial' as any,
+        userFeedback: 'partially_correct' as any,
       };
       expect(() => FeedbackDataValidator.validate(invalid)).toThrow(
         AuditValidationError
@@ -100,7 +100,7 @@ describe('FeedbackData Model', () => {
     it('should validate partial feedback with corrections', () => {
       const partialFeedback = {
         ...validFeedback,
-        userFeedback: 'partial' as any,
+        userFeedback: 'partially_correct' as any,
         corrections:
           'The date should be 2023-01-01 instead of 2022-01-01',
       };
@@ -181,7 +181,7 @@ describe('FeedbackData Model', () => {
     it('should create valid FeedbackData with full data', () => {
       const inputData: Partial<FeedbackData> = {
         verificationId: 'verification-123',
-        userFeedback: 'partial',
+        userFeedback: 'partially_correct',
         corrections: 'Some corrections needed',
         expertNotes: 'Expert review notes',
         userId: 'user-456',
@@ -193,7 +193,7 @@ describe('FeedbackData Model', () => {
         AuditModelFactory.createFeedbackData(inputData);
 
       expect(feedback.verificationId).toBe('verification-123');
-      expect(feedback.userFeedback).toBe('partial');
+      expect(feedback.userFeedback).toBe('partially_correct');
       expect(feedback.corrections).toBe('Some corrections needed');
       expect(feedback.expertNotes).toBe('Expert review notes');
       expect(feedback.userId).toBe('user-456');
@@ -206,7 +206,7 @@ describe('FeedbackData Model', () => {
       expect(() =>
         AuditModelFactory.createFeedbackData({
           verificationId: 'verification-123',
-          userFeedback: 'partial',
+          userFeedback: 'partially_correct',
           userId: 'user-456',
           // Missing corrections for partial feedback
         })
