@@ -66,7 +66,7 @@ export interface SuppressionRule {
 export interface NotificationChannel {
   id: string;
   name: string;
-  type: 'email' | 'slack' | 'webhook' | 'sms';
+  type: 'email' | 'sms';
   config: Record<string, any>;
   enabled: boolean;
 }
@@ -378,7 +378,7 @@ export class AlertingService {
 
   private evaluateCondition(
     condition: AlertCondition,
-    value: any
+    value: unknown
   ): boolean {
     const { operator, threshold } = condition;
 

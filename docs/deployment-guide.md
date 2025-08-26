@@ -30,9 +30,6 @@ KUBE_CONFIG_STAGING      # Base64 encoded kubeconfig for staging
 KUBE_CONFIG_PRODUCTION   # Base64 encoded kubeconfig for production
 STAGING_URL              # Staging environment URL
 PRODUCTION_URL           # Production environment URL
-SLACK_WEBHOOK           # Slack webhook for notifications
-CODECOV_TOKEN           # Codecov token for coverage reports
-SNYK_TOKEN              # Snyk token for security scanning
 ```
 
 ### Kubernetes Secrets
@@ -337,7 +334,6 @@ kubectl port-forward svc/grafana 3000:3000 -n monitoring
 - **DevOps Team**: devops@certaintyai.com
 - **Security Team**: security@certaintyai.com
 - **On-Call Engineer**: +1-555-0123
-- **Slack Channel**: #certaintyai-ops
 
 ### Additional Resources
 

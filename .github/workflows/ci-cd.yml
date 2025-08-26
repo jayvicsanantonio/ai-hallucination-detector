@@ -106,12 +106,11 @@ jobs:
       - name: Generate test coverage
         run: npm run test:coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          fail_ci_if_error: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
 
   # End-to-End Tests
   e2e-tests:
@@ -370,17 +369,6 @@ jobs:
           export STAGING_URL="${{ secrets.STAGING_URL }}"
           npm run test:smoke -- --baseUrl=$STAGING_URL
 
-      - name: Notify deployment
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          channel: '#deployments'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-          message: |
-            Staging deployment completed
-            Image: ${{ needs.build-image.outputs.image-tag }}
-            Commit: ${{ github.sha }}
-
   # Deploy to Production
   deploy-production:
     runs-on: ubuntu-latest
@@ -475,18 +463,6 @@ jobs:
           # Delete old deployment
           kubectl delete deployment api-gateway-${CURRENT_ENV} -n certaintyai --ignore-not-found=true
 
-      - name: Notify production deployment
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          channel: '#production'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-          message: |
-            🚀 Production deployment completed successfully!
-            Image: ${{ needs.build-image.outputs.image-tag }}
-            Commit: ${{ github.sha }}
-            Environment: ${{ env.NEXT_ENV }}
-
   # Rollback capability
   rollback:
     runs-on: ubuntu-latest
@@ -509,14 +485,3 @@ jobs:
 
           # Wait for rollback to complete
           kubectl rollout status deployment/api-gateway -n certaintyai --timeout=300s
-
-      - name: Notify rollback
-        uses: 8398a7/action-slack@v3
-        with:
-          status: 'warning'
-          channel: '#production'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-          message: |
-            ⚠️ Production rollback executed
-            Reason: Deployment failure
-            Commit: ${{ github.sha }}

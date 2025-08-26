@@ -225,7 +225,7 @@ validate_deployment() {
 send_notification() {
     log_info "Sending deployment notification..."
     
-    # This would integrate with your notification system (Slack, email, etc.)
+    # This would integrate with your notification system (email, etc.)
     # For now, just log the deployment details
     
     cat << EOF

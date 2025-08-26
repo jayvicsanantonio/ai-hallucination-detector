@@ -47,8 +47,6 @@ export interface ComplianceConfiguration {
   autoRemediation: boolean;
   notificationSettings: {
     email: string[];
-    webhooks: string[];
-    slackChannels: string[];
   };
   retentionPeriod: number; // days to keep compliance reports
 }
@@ -77,8 +75,6 @@ export class ComplianceFrameworkService {
       autoRemediation: false,
       notificationSettings: {
         email: [],
-        webhooks: [],
-        slackChannels: [],
       },
       retentionPeriod: 2555, // 7 years
       ...config,
@@ -486,7 +482,7 @@ export class ComplianceFrameworkService {
       .filter((f) => f.enabled && f.nextAssessment)
       .sort(
         (a, b) =>
-          a.nextAssessment!.getTime() - b.nextAssessment!.getTime()
+          a.nextAssessment!.getTime() - b.nextAssessment?.getTime()
       );
 
     return frameworks.length > 0
@@ -511,17 +507,7 @@ export class ComplianceFrameworkService {
       }
     }
 
-    // Send webhook notifications
-    for (const webhook of notificationSettings.webhooks) {
-      try {
-        await this.sendWebhookNotification(webhook, report);
-      } catch (error: any) {
-        console.error(
-          `Failed to send webhook notification to ${webhook}:`,
-          error
-        );
-      }
-    }
+    // Webhook notifications removed
   }
 
   private async sendEmailNotification(
@@ -534,15 +520,7 @@ export class ComplianceFrameworkService {
     );
   }
 
-  private async sendWebhookNotification(
-    webhook: string,
-    report: UnifiedComplianceReport
-  ): Promise<void> {
-    // Webhook notification implementation would go here
-    console.log(
-      `Sending compliance report ${report.reportId} to webhook ${webhook}`
-    );
-  }
+  // Webhook notification method removed
 }
 
 export const complianceFrameworkService =
