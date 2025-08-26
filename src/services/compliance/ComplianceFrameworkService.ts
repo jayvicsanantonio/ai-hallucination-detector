@@ -482,7 +482,7 @@ export class ComplianceFrameworkService {
       .filter((f) => f.enabled && f.nextAssessment)
       .sort(
         (a, b) =>
-          a.nextAssessment!.getTime() - b.nextAssessment?.getTime()
+          a.nextAssessment!.getTime() - b.nextAssessment!.getTime()
       );
 
     return frameworks.length > 0
