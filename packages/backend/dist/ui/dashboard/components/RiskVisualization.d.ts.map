@@ -1,0 +1,1 @@
+{"version":3,"file":"RiskVisualization.d.ts","sourceRoot":"","sources":["../../../../src/ui/dashboard/components/RiskVisualization.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,OAAO,CAAC;AAC1B,OAAO,EAAE,KAAK,EAAE,MAAM,yCAAyC,CAAC;AAEhE,UAAU,sBAAsB;IAC9B,SAAS,EAAE,MAAM,CAAC;IAClB,MAAM,EAAE,KAAK,EAAE,CAAC;CACjB;AAED,eAAO,MAAM,iBAAiB,EAAE,KAAK,CAAC,EAAE,CAAC,sBAAsB,CAqJ9D,CAAC"}

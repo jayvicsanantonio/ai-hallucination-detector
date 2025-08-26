@@ -1,101 +1,93 @@
-# CertaintyAI - AI Hallucination Detection System
+# CertaintyAI Monorepo
 
-CertaintyAI is an enterprise AI hallucination detection system that acts as a verification layer for AI-generated content. The system integrates into existing workflows to catch factual errors, logical inconsistencies, and compliance violations before they reach clients or regulators.
-
-## Features
-
-- **Real-time verification** of AI outputs within 2 seconds
-- **Multi-industry support** for legal, financial, healthcare, and insurance sectors
-- **Complete audit trails** for regulatory compliance and risk management
-- **Domain-specific learning** that improves accuracy over time through feedback
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 18+
-- PostgreSQL 13+
-- Redis 6+
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Copy environment configuration:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Update the `.env` file with your database and Redis configurations
-
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-### Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm test` - Run all tests
-- `npm run test:unit` - Run unit tests only
-- `npm run test:integration` - Run integration tests
-- `npm run test:e2e` - Run end-to-end tests
-- `npm run test:coverage` - Generate test coverage report
-- `npm run lint` - Run ESLint for code quality
-
-## API Endpoints
-
-### Health Check
-
-```
-GET /health
-```
-
-### Verification
-
-```
-POST /api/v1/verify
-POST /api/v1/verify/batch
-GET /api/v1/results/{verificationId}
-POST /api/v1/feedback
-```
+Enterprise AI hallucination detection system organized as a monorepo with backend and frontend packages.
 
 ## Project Structure
 
 ```
-src/
-├── api/                      # API Gateway and routes
-├── services/                 # Core business services
-├── modules/                  # Verification modules
-├── models/                   # Data models and interfaces
-├── database/                 # Database schemas and migrations
-└── utils/                    # Shared utilities
+/
+├── packages/
+│   └── backend/                  # API service (moved from root)
+│       ├── src/                  # Source code
+│       ├── tests/                # Test suites
+│       ├── k8s/                  # Kubernetes configs
+│       ├── docker/               # Docker configs
+│       ├── package.json          # Backend dependencies
+│       └── tsconfig.json         # Backend TypeScript config
+├── package.json                  # Root workspace configuration
+├── tsconfig.json                 # Shared TypeScript base config
+├── .eslintrc.js                  # Shared ESLint configuration
+├── .prettierrc                   # Shared Prettier configuration
+└── .kiro/                        # Kiro configuration
 ```
 
-## Architecture
+## Getting Started
 
-The system follows a microservices pattern with:
+### Prerequisites
 
-- **API Gateway**: Entry point with authentication and rate limiting
-- **Verification Engine**: Orchestrates all verification modules
-- **Domain Modules**: Industry-specific validation (legal, financial, healthcare)
-- **Knowledge Base**: Factual information for verification
-- **Audit Logger**: Comprehensive compliance tracking
+- Node.js 18+
+- npm 8+
 
-## Contributing
+### Installation
 
-1. Follow the existing code style and patterns
-2. Write tests for new functionality
-3. Update documentation as needed
-4. Ensure all tests pass before submitting
+```bash
+# Install all dependencies for all packages
+npm install
+```
 
-## License
+### Development
 
-MIT License - see LICENSE file for details
+```bash
+# Start backend development server
+npm run dev:backend
+
+# Build all packages
+npm run build
+
+# Build specific package
+npm run build:backend
+
+# Run tests for all packages
+npm run test
+
+# Run tests for specific package
+npm run test:backend
+
+# Lint all packages
+npm run lint
+
+# Lint and fix all packages
+npm run lint:fix
+```
+
+### Workspace Commands
+
+The monorepo uses npm workspaces. You can run commands in specific packages:
+
+```bash
+# Run command in specific workspace
+npm run <command> --workspace=@certaintyai/backend
+
+# Install dependency in specific workspace
+npm install <package> --workspace=@certaintyai/backend
+```
+
+## Packages
+
+### @certaintyai/backend
+
+The main API service providing AI hallucination detection capabilities.
+
+- **Location**: `packages/backend/`
+- **Port**: 3000 (development)
+- **Technologies**: Node.js, TypeScript, Express, PostgreSQL, Redis
+
+## Shared Configuration
+
+- **TypeScript**: Base configuration in root `tsconfig.json`
+- **ESLint**: Shared rules in root `.eslintrc.js`
+- **Prettier**: Code formatting rules in root `.prettierrc`
+
+## Next Steps
+
+This monorepo is ready for frontend package addition. The next task will be to create the React frontend application in `packages/frontend/`.

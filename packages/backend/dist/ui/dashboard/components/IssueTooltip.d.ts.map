@@ -1,0 +1,1 @@
+{"version":3,"file":"IssueTooltip.d.ts","sourceRoot":"","sources":["../../../../src/ui/dashboard/components/IssueTooltip.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,OAAO,CAAC;AAC1B,OAAO,EAAE,KAAK,EAAE,MAAM,yCAAyC,CAAC;AAEhE,UAAU,iBAAiB;IACzB,KAAK,EAAE,KAAK,CAAC;IACb,OAAO,EAAE,MAAM,IAAI,CAAC;CACrB;AAED,eAAO,MAAM,YAAY,EAAE,KAAK,CAAC,EAAE,CAAC,iBAAiB,CAoGpD,CAAC"}

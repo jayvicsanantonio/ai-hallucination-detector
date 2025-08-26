@@ -1,0 +1,12 @@
+export type Domain = 'healthcare' | 'financial' | 'legal' | 'insurance' | 'general';
+export type ContentType = 'text' | 'pdf' | 'docx' | 'json';
+export type Urgency = 'low' | 'medium' | 'high' | 'critical';
+export type UrgencyLevel = Urgency;
+export type FeedbackType = 'correct' | 'incorrect' | 'partially_correct' | 'unclear';
+export type VerificationStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type EntityType = 'person' | 'organization' | 'location' | 'date' | 'number' | 'amount' | 'email' | 'phone' | 'ssn' | 'credit_card' | 'url' | 'place' | 'other';
+export type IssueType = 'factual_error' | 'logical_inconsistency' | 'compliance_violation' | 'formatting_issue' | 'other';
+export type IssueSeverity = 'low' | 'medium' | 'high' | 'critical';
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+export type SourceType = 'academic' | 'government' | 'news' | 'encyclopedia' | 'industry' | 'internal' | 'other';
+//# sourceMappingURL=ContentTypes.d.ts.map
