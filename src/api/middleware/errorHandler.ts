@@ -1,74 +1,74 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErrorResponse } from '../interfaces/APITypes';
 
 export interface AppError extends Error {
   statusCode?: number;
   code?: string;
-  retryable?: boolean;
-  details?: Record<string, any>;
+  isOperational?: boolean;
 }
 
-export const errorHandler = (
-  err: AppError,
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  const statusCode = err.statusCode || 500;
-  const errorCode = err.code || 'INTERNAL_SERVER_ERROR';
-  const retryable =
-    err.retryable !== undefined ? err.retryable : statusCode >= 500;
-
-  const errorResponse: ErrorResponse = {
-    error: {
-      code: errorCode,
-      message: err.message || 'An unexpected error occurred',
-      details: err.details,
-      timestamp: new Date(),
-      requestId: (req.headers['x-request-id'] as string) || 'unknown',
-      retryable,
-    },
-  };
-
-  // Log error for monitoring
-  console.error('API Error:', {
-    requestId: errorResponse.error.requestId,
-    code: errorCode,
-    message: err.message,
-    stack: err.stack,
-    url: req.url,
-    method: req.method,
-    statusCode,
-  });
-
-  res.status(statusCode).json(errorResponse);
-};
-
-// Async error wrapper
-export const asyncHandler = (
-  fn: (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => Promise<any>
-) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
-
-// Create specific error types
 export const createError = (
   message: string,
   statusCode: number = 500,
-  code?: string,
-  retryable?: boolean,
-  details?: Record<string, any>
+  code: string = 'INTERNAL_ERROR',
+  isOperational: boolean = true,
+  details?: any
 ): AppError => {
   const error = new Error(message) as AppError;
   error.statusCode = statusCode;
   error.code = code;
-  error.retryable = retryable;
-  error.details = details;
+  error.isOperational = isOperational;
+  if (details) {
+    (error as any).details = details;
+  }
   return error;
+};
+
+export const errorHandler = (
+  error: AppError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Default error values
+  let statusCode = error.statusCode || 500;
+  let message = error.message || 'Internal Server Error';
+  let code = error.code || 'INTERNAL_ERROR';
+
+  // Log error for debugging
+  console.error('Error:', {
+    message: error.message,
+    stack: error.stack,
+    url: req.url,
+    method: req.method,
+    statusCode,
+    code,
+  });
+
+  // Handle specific error types
+  if (error.name === 'ValidationError') {
+    statusCode = 400;
+    code = 'VALIDATION_ERROR';
+  } else if (error.name === 'UnauthorizedError') {
+    statusCode = 401;
+    code = 'UNAUTHORIZED';
+  } else if (error.name === 'CastError') {
+    statusCode = 400;
+    code = 'INVALID_ID';
+    message = 'Invalid ID format';
+  }
+
+  // Don't expose internal errors in production
+  if (process.env.NODE_ENV === 'production' && statusCode === 500) {
+    message = 'Internal Server Error';
+  }
+
+  res.status(statusCode).json({
+    error: {
+      code,
+      message,
+      ...(process.env.NODE_ENV === 'development' && {
+        stack: error.stack,
+      }),
+    },
+  });
 };

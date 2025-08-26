@@ -30,7 +30,7 @@ export class SecureServer {
 
   private setupMiddleware(): void {
     // Enhanced security middleware with TLS 1.3 headers
-    app.use(
+    this.app.use(
       helmet({
         hsts: {
           maxAge: 31536000,

@@ -32,7 +32,6 @@ export interface OrganizationSettings {
 
 export interface NotificationSettings {
   emailAlerts: boolean;
-  slackWebhook?: string;
   alertThresholds: {
     highRiskIssues: boolean;
     complianceViolations: boolean;
@@ -68,7 +67,7 @@ export interface AuditLogEntity extends DatabaseEntity {
   organizationId: string;
   action: string;
   component: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
 }

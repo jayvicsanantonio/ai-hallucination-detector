@@ -55,13 +55,16 @@ export class WikipediaSource implements ExternalKnowledgeSource {
       const sources: Source[] = searchResults.map(
         (result, index) => ({
           id: `wikipedia-${Date.now()}-${index}`,
+          name: 'Wikipedia',
           title: result.title,
           url: result.url,
-          sourceType: 'academic' as SourceType, // Wikipedia is considered academic-ish
+          type: 'encyclopedia' as SourceType,
+          sourceType: 'encyclopedia' as SourceType,
           credibilityScore: this.getReliabilityForDomain(
             query.domain || 'healthcare'
           ),
           publishDate: result.lastModified,
+          lastUpdated: result.lastModified,
           lastVerified: new Date(),
         })
       );
@@ -163,7 +166,7 @@ export class WikipediaSource implements ExternalKnowledgeSource {
   }
 
   private calculateConfidence(
-    results: any[],
+    results: unknown[],
     statement: string
   ): number {
     if (results.length === 0) return 0;

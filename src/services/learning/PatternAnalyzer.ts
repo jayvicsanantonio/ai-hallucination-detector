@@ -334,7 +334,7 @@ export class PatternAnalyzer {
       (f) => f.userFeedback === 'incorrect'
     ).length;
     const partialCount = feedbackData.filter(
-      (f) => f.userFeedback === 'partial'
+      (f) => f.userFeedback === 'partially_correct'
     ).length;
     const total = feedbackData.length;
 
@@ -384,7 +384,7 @@ export class PatternAnalyzer {
       (f) => f.userFeedback === 'correct'
     ).length;
     const partialCount = feedbackData.filter(
-      (f) => f.userFeedback === 'partial'
+      (f) => f.userFeedback === 'partially_correct'
     ).length;
 
     return (correctCount + partialCount * 0.5) / feedbackData.length;

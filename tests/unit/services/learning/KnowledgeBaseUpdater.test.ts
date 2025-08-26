@@ -65,6 +65,8 @@ describe('KnowledgeBaseUpdater', () => {
           sources: [],
           confidence: 0.9,
           domain: 'legal',
+          verified: true,
+          createdAt: new Date(),
           lastVerified: new Date(),
         }
       );
@@ -129,7 +131,7 @@ describe('KnowledgeBaseUpdater', () => {
       // Arrange
       const feedbackData: FeedbackData = {
         verificationId: 'test-verification-id',
-        userFeedback: 'partial',
+        userFeedback: 'partially_correct',
         corrections: 'Partially correct but missing context',
         expertNotes: 'This depends on jurisdiction',
         userId: 'test-user-id',

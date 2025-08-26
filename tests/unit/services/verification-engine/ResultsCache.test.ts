@@ -121,7 +121,7 @@ describe('ResultsCache', () => {
       // Miss
       await cache.get('non-existent');
 
-      const stats = cache.getStats();
+      const stats = await cache.getStats();
       expect(stats.hits).toBe(1);
       expect(stats.misses).toBe(1);
       expect(stats.hitRate).toBe(0.5);
@@ -134,7 +134,7 @@ describe('ResultsCache', () => {
 
       await cache.clear();
 
-      const stats = cache.getStats();
+      const stats = await cache.getStats();
       expect(stats.hits).toBe(0);
       expect(stats.misses).toBe(0);
       expect(stats.size).toBe(0);

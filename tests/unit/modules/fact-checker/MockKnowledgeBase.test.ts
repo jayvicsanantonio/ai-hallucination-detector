@@ -65,7 +65,9 @@ describe('MockKnowledgeBase', () => {
         statement: 'Test statement for verification',
         sources: [],
         confidence: 85,
-        domain: 'healthcare' as Domain,
+        domain: 'healthcare',
+        verified: true,
+        createdAt: new Date(),
         lastVerified: new Date(),
       };
 
@@ -82,9 +84,11 @@ describe('MockKnowledgeBase', () => {
     it('should add sources when adding a claim', async () => {
       const newSource: Source = {
         id: 'test-source-1',
+        name: 'Test Source',
         title: 'Test Source',
-        sourceType: 'academic' as SourceType,
+        type: 'academic' as SourceType,
         credibilityScore: 90,
+        lastUpdated: new Date(),
       };
 
       const newClaim: FactualClaim = {
@@ -92,7 +96,9 @@ describe('MockKnowledgeBase', () => {
         statement: 'Another test statement',
         sources: [newSource],
         confidence: 80,
-        domain: 'legal' as Domain,
+        domain: 'legal',
+        verified: true,
+        createdAt: new Date(),
         lastVerified: new Date(),
       };
 
@@ -113,7 +119,9 @@ describe('MockKnowledgeBase', () => {
         statement: 'Original statement',
         sources: [],
         confidence: 70,
-        domain: 'financial' as Domain,
+        domain: 'financial',
+        verified: true,
+        createdAt: new Date(),
         lastVerified: new Date(),
       };
 

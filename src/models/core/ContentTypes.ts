@@ -1,53 +1,58 @@
-// Content type definitions and enums
-
-export type ContentType = 'text' | 'txt' | 'pdf' | 'docx' | 'json';
-
 export type Domain =
-  | 'legal'
-  | 'financial'
   | 'healthcare'
-  | 'insurance';
+  | 'financial'
+  | 'legal'
+  | 'insurance'
+  | 'general';
 
-export type UrgencyLevel = 'low' | 'medium' | 'high';
+export type ContentType = 'text' | 'pdf' | 'docx' | 'json';
 
-export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+export type Urgency = 'low' | 'medium' | 'high' | 'critical';
+export type UrgencyLevel = Urgency;
 
-export type IssueType =
-  | 'factual_error'
-  | 'logical_inconsistency'
-  | 'compliance_violation';
+export type FeedbackType =
+  | 'correct'
+  | 'incorrect'
+  | 'partially_correct'
+  | 'unclear';
 
-export type IssueSeverity = 'low' | 'medium' | 'high' | 'critical';
+export type VerificationStatus =
+  | 'pending'
+  | 'processing'
+  | 'completed'
+  | 'failed';
 
 export type EntityType =
   | 'person'
   | 'organization'
+  | 'location'
   | 'date'
+  | 'number'
   | 'amount'
-  | 'regulation'
-  | 'medical_term'
   | 'email'
   | 'phone'
-  | 'url'
   | 'ssn'
   | 'credit_card'
-  | 'ip_address'
-  | 'percentage'
-  | 'legal_entity'
-  | 'financial_instrument'
-  | 'insurance_term'
-  | 'place';
+  | 'url'
+  | 'place'
+  | 'other';
+
+export type IssueType =
+  | 'factual_error'
+  | 'logical_inconsistency'
+  | 'compliance_violation'
+  | 'formatting_issue'
+  | 'other';
+
+export type IssueSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
 export type SourceType =
   | 'academic'
   | 'government'
-  | 'industry'
   | 'news'
-  | 'internal';
-
-export type FeedbackType = 'correct' | 'incorrect' | 'partial';
-
-export type VerificationStatus =
-  | 'processing'
-  | 'completed'
-  | 'failed';
+  | 'encyclopedia'
+  | 'industry'
+  | 'internal'
+  | 'other';

@@ -139,7 +139,7 @@ export class FeedbackService {
           (f) => f.userFeedback === 'incorrect'
         ).length,
         partialCount: feedback.filter(
-          (f) => f.userFeedback === 'partial'
+          (f) => f.userFeedback === 'partially_correct'
         ).length,
         averageConfidence: this.calculateAverageConfidence(feedback),
         commonIssues: await this.getCommonIssues(verificationId),
@@ -286,7 +286,7 @@ export class FeedbackService {
         return 1.0;
       case 'incorrect':
         return 0.0;
-      case 'partial':
+      case 'partially_correct':
         return 0.5;
       default:
         return 0.5;

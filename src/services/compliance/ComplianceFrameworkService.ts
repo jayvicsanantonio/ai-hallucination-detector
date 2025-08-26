@@ -47,8 +47,6 @@ export interface ComplianceConfiguration {
   autoRemediation: boolean;
   notificationSettings: {
     email: string[];
-    webhooks: string[];
-    slackChannels: string[];
   };
   retentionPeriod: number; // days to keep compliance reports
 }
@@ -77,8 +75,6 @@ export class ComplianceFrameworkService {
       autoRemediation: false,
       notificationSettings: {
         email: [],
-        webhooks: [],
-        slackChannels: [],
       },
       retentionPeriod: 2555, // 7 years
       ...config,
@@ -333,7 +329,7 @@ export class ComplianceFrameworkService {
       attempted: 0,
       successful: 0,
       failed: 0,
-      errors: [],
+      errors: [] as string[],
     };
 
     // Remediate GDPR data retention issues
@@ -355,12 +351,12 @@ export class ComplianceFrameworkService {
           }
         } else {
           results.failed++;
-          results.errors.push(...cleanupResults.errors);
+          results.errors.push(...(cleanupResults.errors as string[]));
         }
       } catch (error: any) {
         results.failed++;
         results.errors.push(
-          `GDPR remediation failed: ${error.message}`
+          `GDPR remediation failed: ${(error as Error).message}`
         );
       }
     }
@@ -511,17 +507,7 @@ export class ComplianceFrameworkService {
       }
     }
 
-    // Send webhook notifications
-    for (const webhook of notificationSettings.webhooks) {
-      try {
-        await this.sendWebhookNotification(webhook, report);
-      } catch (error: any) {
-        console.error(
-          `Failed to send webhook notification to ${webhook}:`,
-          error
-        );
-      }
-    }
+    // Webhook notifications removed
   }
 
   private async sendEmailNotification(
@@ -534,15 +520,7 @@ export class ComplianceFrameworkService {
     );
   }
 
-  private async sendWebhookNotification(
-    webhook: string,
-    report: UnifiedComplianceReport
-  ): Promise<void> {
-    // Webhook notification implementation would go here
-    console.log(
-      `Sending compliance report ${report.reportId} to webhook ${webhook}`
-    );
-  }
+  // Webhook notification method removed
 }
 
 export const complianceFrameworkService =

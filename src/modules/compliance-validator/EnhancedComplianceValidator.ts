@@ -589,7 +589,7 @@ export class EnhancedComplianceValidator {
         await this.repository.recordViolation({
           ...violation,
           verification_session_id: sessionId,
-        } as unknown);
+        } as any);
       } catch (error) {
         console.error('Failed to record violation:', error);
       }
