@@ -49,7 +49,7 @@
     "react-dom": "^18.2.0",
     "recharts": "^2.8.0",
     "redis": "^4.6.10",
-    "uuid": "^9.0.1",
+    "uuid": "^14.0.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
